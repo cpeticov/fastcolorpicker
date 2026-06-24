@@ -272,22 +272,24 @@ body {
 }
 
 /* ==========================================================================
-   COLOR HISTORY RECENT BLOCK
+   COLOR HISTORY RECENT BLOCK (CORRIGIDO)
    ========================================================================== */
 .history-container {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    background: #1f2937;
+    background: #111827; /* ALTERADO: Agora usa o mesmo azul escuro do fundo da tela */
     padding: 16px;
     border-radius: 12px;
-    border: 1px solid #374151;
+    border: 1px solid #374151; /* ALTERADO: Contorno fino de 1px no azul acinzentado mais claro */
 }
+
 .history-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .history-title {
     font-size: 0.8rem;
     color: #9ca3af;
@@ -295,6 +297,7 @@ body {
     font-weight: bold;
     letter-spacing: 0.5px;
 }
+
 .clear-history-btn {
     background: none;
     border: none;
@@ -303,32 +306,48 @@ body {
     cursor: pointer;
     transition: color 0.2s;
 }
+
 .clear-history-btn:hover {
-    color: #ef4444; /* Vermelho discreto ao passar o mouse */
+    color: #ef4444;
 }
+
 .history-swatches {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     overflow-x: auto;
-    padding-bottom: 4px;
-    min-height: 40px;
+    min-height: 46px;
+    /* CORREÇÃO DO CORTE: Adiciona margem de segurança interna para o crescimento do círculo */
+    padding: 4px 6px; 
+    margin-left: -6px;
+    margin-right: -6px;
 }
-/* Estilo do mini-quadradinho histórico */
+
+/* Esconde a barra de rolagem horizontal feia no Windows para manter o visual limpo */
+.history-swatches::-webkit-scrollbar {
+    display: none;
+}
+
+/* Estilo do círculo do histórico */
 .history-item {
     width: 36px;
     height: 36px;
-    border-radius: 50%; /* Transforma em círculos modernos */
+    border-radius: 50%;
     flex-shrink: 0;
     cursor: pointer;
-    border: 2px solid rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.15);
     position: relative;
-    transition: transform 0.2s, border-color 0.2s;
+    /* Transição suave tanto para o tamanho quanto para a borda */
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s;
 }
+
+/* Rollover: O círculo cresce perfeitamente sem cortes nas bordas ou nas laterais */
 .history-item:hover {
-    transform: scale(1.1);
-    border-color: rgba(255,255,255,0.6);
+    transform: scale(1.15);
+    border-color: rgba(255,255,255,0.8);
+    z-index: 10; /* Garante que o círculo fique por cima se houver sobreposição */
 }
-/* Ícone sutil flutuante de cópia dentro do círculo */
+
+/* Ícone sutil de prancheta centralizado */
 .history-item::after {
     content: "📋";
     position: absolute;
@@ -339,6 +358,7 @@ body {
     transition: transform 0.15s;
     pointer-events: none;
 }
+
 .history-item:hover::after {
     transform: translate(-50%, -50%) scale(1);
 }
