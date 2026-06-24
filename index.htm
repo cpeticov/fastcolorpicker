@@ -17,7 +17,7 @@
     <section class="preview-section" id="previewBg">
         <button class="main-action-btn" id="actionBtn">Pick Color from Screen</button>
         <!-- Discretely alerts the user about the browser clipboard permission -->
-        <span class="permission-hint" id="hintText">Requires clipboard permission to auto-copy</span>
+        <span class="permission-hint" id="hintText">Requires browser permission to auto-copy</span>
         <input type="file" id="image-fallback" accept="image/*">
     </section>
 
@@ -56,28 +56,40 @@
         <div class="formats-list">
             <div class="format-row" onclick="copyText(this)">
                 <div>
-                    <div class="format-label">HEX</div>
+                    <div class="format-header">
+                        <span class="format-label">HEX</span>
+                        <span class="click-hint">Click to copy</span>
+                    </div>
                     <div class="format-value" id="valHex">#3B82F6</div>
                 </div>
                 <div class="toast">Copied!</div>
             </div>
             <div class="format-row" onclick="copyText(this)">
                 <div>
-                    <div class="format-label">RGB</div>
+                    <div class="format-header">
+                        <span class="format-label">RGB</span>
+                        <span class="click-hint">Click to copy</span>
+                    </div>
                     <div class="format-value" id="valRgb">rgb(59, 130, 246)</div>
                 </div>
                 <div class="toast">Copied!</div>
             </div>
             <div class="format-row" onclick="copyText(this)">
                 <div>
-                    <div class="format-label">CMYK</div>
+                    <div class="format-header">
+                        <span class="format-label">CMYK</span>
+                        <span class="click-hint">Click to copy</span>
+                    </div>
                     <div class="format-value" id="valCmyk">cmyk(76%, 47%, 0%, 4%)</div>
                 </div>
                 <div class="toast">Copied!</div>
             </div>
             <div class="format-row" onclick="copyText(this)">
                 <div>
-                    <div class="format-label">Pantone Approximation</div>
+                    <div class="format-header">
+                        <span class="format-label">Pantone Approximation</span>
+                        <span class="click-hint">Click to copy</span>
+                    </div>
                     <div class="format-value" id="valPantone">PMS 2192 C</div>
                 </div>
                 <div class="toast">Copied!</div>

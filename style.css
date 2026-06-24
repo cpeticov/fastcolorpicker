@@ -249,3 +249,24 @@ body {
 @media (max-width: 767px) {
     .permission-hint { display: none; }
 }
+/* Alinha o título do formato e a dica lado a lado */
+.format-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+/* Estilização da dica discreta "Click to copy" */
+.click-hint {
+    font-size: 0.7rem;
+    color: #6b7280; /* Um tom cinza mais escuro/sutil */
+    text-transform: none;
+    font-weight: normal;
+    opacity: 0.8;
+}
+
+/* Efeito sutil: quando o usuário passa o mouse na linha, o "Click to copy" ganha um leve destaque */
+.format-row:hover .click-hint {
+    color: #9ca3af;
+}
