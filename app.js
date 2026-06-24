@@ -16,7 +16,7 @@ const pantonePalette = [
 
 // 1. Inteligência de Dispositivo (Conta-gotas no PC vs Câmera no Mobile)
 if (window.EyeDropper) {
-    btn.textContent = "🔍 Pegar Cor da Tela";
+    btn.textContent = "🔍 Pick Color from Screen";
     btn.addEventListener('click', async () => {
         const eyeDropper = new EyeDropper();
         try {
