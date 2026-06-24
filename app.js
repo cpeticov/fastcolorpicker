@@ -10,11 +10,51 @@ const historyList = document.getElementById('historyList');
 // Carrega o histórico salvo do navegador ou começa vazio (máximo 8 cores)
 let colorHistory = JSON.parse(localStorage.getItem('colorHistory')) || [];
 
+// Banco de dados expandido com as principais cores Pantone (PMS) do mercado real
 const pantonePalette = [
-    { name: 'PMS 186 C', r: 200, g: 16, b: 46 },
-    { name: 'PMS 2192 C', r: 59, g: 130, b: 246 },
-    { name: 'PMS 354 C', r: 0, g: 177, b: 64 },
-    { name: 'PMS Process Black', r: 39, g: 37, b: 31 }
+    // VERMELHOS E ROSAS
+    { name: 'PMS 186 C (Bright Red)', r: 200, g: 16, b: 46 },
+    { name: 'PMS 199 C (Ruby Red)', r: 213, g: 0, b: 50 },
+    { name: 'PMS 226 C (Magenta/Pink)', r: 213, g: 0, b: 121 },
+    { name: 'PMS 1788 C (Warm Red)', r: 249, g: 56, b: 34 },
+
+    // LARANJAS
+    { name: 'PMS 021 C (Pure Orange)', r: 255, g: 108, b: 0 },
+    { name: 'PMS 151 C (Tiger Orange)', r: 255, g: 130, b: 0 },
+    { name: 'PMS 165 C (Coral Orange)', r: 255, g: 103, b: 31 },
+
+    // AMARELOS
+    { name: 'PMS Yellow C (Process Yellow)', r: 254, g: 221, b: 0 },
+    { name: 'PMS 116 C (Golden Yellow)', r: 255, g: 205, b: 0 },
+    { name: 'PMS 123 C (Warm Yellow)', r: 255, g: 199, b: 44 },
+
+    // ROXOS E VIOLETAS
+    { name: 'PMS Violet C (Deep Violet)', r: 67, g: 0, b: 151 },
+    { name: 'PMS 266 C (Royal Purple)', r: 127, g: 31, b: 223 },
+    { name: 'PMS 252 C (Bright Orchid)', r: 218, g: 58, b: 219 },
+
+    // AZUIS
+    { name: 'PMS 2192 C (Vibrant Blue)', r: 59, g: 130, b: 246 },
+    { name: 'PMS Reflex Blue C', r: 10, g: 22, b: 150 },
+    { name: 'PMS Process Blue C', r: 0, g: 133, b: 202 },
+    { name: 'PMS 293 C (Classic Blue)', r: 0, g: 61, b: 165 },
+    { name: 'PMS 300 C (Ocean Blue)', r: 0, g: 94, b: 184 },
+
+    // VERDES
+    { name: 'PMS 354 C (Bright Green)', r: 0, g: 177, b: 64 },
+    { name: 'PMS Green C (Process Green)', r: 0, g: 166, b: 80 },
+    { name: 'PMS 368 C (Lime Green)', r: 120, g: 190, b: 32 },
+    { name: 'PMS 320 C (Teal/Turquoise)', r: 0, g: 156, b: 166 },
+
+    // MARRONS E DIAS DE OUTONO
+    { name: 'PMS 469 C (Chocolate Brown)', r: 96, g: 58, b: 43 },
+    { name: 'PMS 168 C (Dark Ochre)', r: 114, g: 61, b: 34 },
+
+    // NEUTROS, ACINZENTADOS E PRETOS
+    { name: 'PMS Process Black C', r: 39, g: 37, b: 31 },
+    { name: 'PMS Cool Gray 1 C (Light Gray)', r: 217, g: 217, b: 214 },
+    { name: 'PMS Cool Gray 7 C (Medium Gray)', r: 151, g: 153, b: 155 },
+    { name: 'PMS Cool Gray 11 C (Dark Charcoal)', r: 83, g: 86, b: 90 }
 ];
 
 // Inicializa a tela carregando o histórico salvo anteriormente
