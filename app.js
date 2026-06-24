@@ -207,3 +207,10 @@ function copyText(element) {
         setTimeout(() => toast.classList.remove('show'), 1200);
     });
 }
+
+// Função para abrir/fechar o modal de políticas de privacidade
+function togglePrivacy(event) {
+    event.preventDefault();
+    const modal = document.getElementById('privacyModal');
+    modal.classList.toggle('active');
+}
