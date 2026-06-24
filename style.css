@@ -63,11 +63,11 @@ body {
 /* Metade Inferior / Direita: Painel de Controle e Cópia */
 .control-section {
     flex: 1.2;
-    padding: 24px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 24px;
+    gap: 16px;
     background-color: #111827;
 }
 
