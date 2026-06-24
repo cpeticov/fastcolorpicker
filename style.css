@@ -107,11 +107,28 @@ input[type="range"]::-webkit-slider-thumb {
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
-/* Linhas de Cópia "One Click" */
-.formats-list {
+/* No celular, mantém o comportamento original de empilhar um abaixo do outro */
+.formats-grid {
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+/* Comportamento responsivo para computadores e telas maiores que 768px */
+@media (min-width: 768px) {
+    /* Transforma o container em duas colunas perfeitas de 50% de largura descontando o espaçamento (gap) */
+    .formats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    /* Garante que o painel da direita ocupe a tela inteira sem scroll */
+    .control-section {
+        justify-content: space-between;
+        height: 100vh;
+        overflow: hidden; /* Corta a rolagem indesejada no computador */
+    }
 }
 .format-row {
     background: #1f2937;
