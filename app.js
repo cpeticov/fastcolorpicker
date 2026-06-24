@@ -5,8 +5,11 @@ const preview = document.getElementById('previewBg');
 const slideR = document.getElementById('slideR');
 const slideG = document.getElementById('slideG');
 const slideB = document.getElementById('slideB');
+const historyList = document.getElementById('historyList');
 
-// Amostra reduzida de cores Pantone para simular o algoritmo de aproximação
+// Carrega o histórico salvo do navegador ou começa vazio (máximo 8 cores)
+let colorHistory = JSON.parse(localStorage.getItem('colorHistory')) || [];
+
 const pantonePalette = [
     { name: 'PMS 186 C', r: 200, g: 16, b: 46 },
     { name: 'PMS 2192 C', r: 59, g: 130, b: 246 },
@@ -14,31 +17,29 @@ const pantonePalette = [
     { name: 'PMS Process Black', r: 39, g: 37, b: 31 }
 ];
 
-// 1. Inteligência de Dispositivo (Conta-gotas no PC vs Câmera no Mobile)
+// Inicializa a tela carregando o histórico salvo anteriormente
+renderHistory();
+
 if (window.EyeDropper) {
-    btn.textContent = "🔍 Pick Color from Screen";
+    btn.textContent = "🔍 Pick Color from Screen"; 
     btn.addEventListener('click', async () => {
         const eyeDropper = new EyeDropper();
         try {
             const result = await eyeDropper.open();
             updateFromHex(result.sRGBHex);
             
-            // NOVO: Copia automaticamente o HEX assim que o usuário escolhe a cor na lupa
+            // Salva no histórico e copia
+            addToHistory(result.sRGBHex.toUpperCase());
             navigator.clipboard.writeText(result.sRGBHex.toUpperCase());
             
-            // NOVO: Feedback visual na linha do HEX para avisar que foi copiado
-            const hexRow = document.getElementById('valHex').closest('.format-row');
-            const toast = hexRow.querySelector('.toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 1200);
-
-        } catch (e) { console.log("Seleção cancelada"); }
+            triggerToast('valHex');
+        } catch (e) { console.log("Selection canceled"); }
     });
 } else {
-    btn.textContent = "📸 Enviar Foto/Imagem";
+    btn.textContent = "📸 Upload Image or Photo";
     btn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => {
-        const file = e.target.files;
+        const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = function(event) {
@@ -51,6 +52,7 @@ if (window.EyeDropper) {
                 const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
                 slideR.value = r; slideG.value = g; slideB.value = b;
                 updateColors();
+                addToHistory(rgbToHex(r, g, b));
             }
             img.src = event.target.result;
         }
@@ -58,7 +60,6 @@ if (window.EyeDropper) {
     });
 }
 
-// 2. Funções Matemáticas de Conversão (Client-Side Puro)
 function rgbToHex(r, g, b) {
     return "#" + [r, g, b].map(x => {
         const hex = parseInt(x).toString(16);
@@ -67,9 +68,7 @@ function rgbToHex(r, g, b) {
 }
 
 function rgbToCmyk(r, g, b) {
-    let c = 1 - (r / 255);
-    let m = 1 - (g / 255);
-    let y = 1 - (b / 255);
+    let c = 1 - (r / 255); let m = 1 - (g / 255); let y = 1 - (b / 255);
     let k = Math.min(c, Math.min(m, y));
     if (k === 1) return "cmyk(0%, 0%, 0%, 100%)";
     c = Math.round(((c - k) / (1 - k)) * 100);
@@ -79,18 +78,11 @@ function rgbToCmyk(r, g, b) {
     return `cmyk(${c}%, ${m}%, ${y}%, ${k}%)`;
 }
 
-// Calcula a menor distância geométrica entre a cor atual e a tabela Pantone
 function getClosestPantone(r, g, b) {
-    let closest = pantonePalette;
-    let minDistance = Infinity;
+    let closest = pantonePalette[0]; let minDistance = Infinity;
     pantonePalette.forEach(p => {
-        let distance = Math.sqrt(
-            Math.pow(r - p.r, 2) + Math.pow(g - p.g, 2) + Math.pow(b - p.b, 2)
-        );
-        if (distance < minDistance) {
-            minDistance = distance;
-            closest = p;
-        }
+        let distance = Math.sqrt(Math.pow(r - p.r, 2) + Math.pow(g - p.g, 2) + Math.pow(b - p.b, 2));
+        if (distance < minDistance) { minDistance = distance; closest = p; }
     });
     return closest.name;
 }
@@ -103,29 +95,70 @@ function updateFromHex(hex) {
     updateColors();
 }
 
-// 3. Atualização de Interface em Tempo Real
 function updateColors() {
-    const r = slideR.value;
-    const g = slideG.value;
-    const b = slideB.value;
-    
+    const r = slideR.value; const g = slideG.value; const b = slideB.value;
     const hex = rgbToHex(r, g, b);
-    const cmyk = rgbToCmyk(r, g, b);
-    const pantone = getClosestPantone(r, g, b);
-
     document.documentElement.style.setProperty('--selected-color', hex);
     document.getElementById('valHex').textContent = hex;
     document.getElementById('valRgb').textContent = `rgb(${r}, ${g}, ${b})`;
-    document.getElementById('valCmyk').textContent = cmyk;
-    document.getElementById('valPantone').textContent = pantone;
+    document.getElementById('valCmyk').textContent = rgbToCmyk(r, g, b);
+    document.getElementById('valPantone').textContent = getClosestPantone(r, g, b);
 }
 
-// Escuta os Sliders (input funciona de forma contínua no touch enquanto arrasta)
+// Escuta os Sliders em tempo real para a cor de fundo
 [slideR, slideG, slideB].forEach(slider => {
     slider.addEventListener('input', updateColors);
+    // GATILHO INTELIGENTE: Só joga no histórico quando o usuário solta o mouse/dedo
+    slider.addEventListener('change', () => {
+        const hex = rgbToHex(slideR.value, slideG.value, slideB.value);
+        addToHistory(hex);
+    });
 });
 
-// 4. Mecanismo de Cópia "One Click" com Feedback Visual rápido
+// GERENCIAMENTO DO HISTÓRICO
+function addToHistory(hex) {
+    // Evita duplicados seguidos
+    if (colorHistory[0] === hex) return;
+    // Adiciona no início da lista
+    colorHistory.unshift(hex);
+    // Limita em 8 cores na tela para manter o minimalismo
+    if (colorHistory.length > 8) colorHistory.pop();
+    // Salva no navegador do usuário
+    localStorage.setItem('colorHistory', JSON.stringify(colorHistory));
+    renderHistory();
+}
+
+function renderHistory() {
+    historyList.innerHTML = '';
+    colorHistory.forEach(hex => {
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.style.backgroundColor = hex;
+        item.title = `Click to apply & copy: ${hex}`;
+        
+        // Um clique: Aplica a cor na tela e já joga o HEX no clipboard
+        item.addEventListener('click', () => {
+            updateFromHex(hex);
+            navigator.clipboard.writeText(hex);
+            triggerToast('valHex');
+        });
+        historyList.appendChild(item);
+    });
+}
+
+function clearHistory() {
+    colorHistory = [];
+    localStorage.removeItem('colorHistory');
+    renderHistory();
+}
+
+function triggerToast(id) {
+    const row = document.getElementById(id).closest('.format-row');
+    const toast = row.querySelector('.toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1200);
+}
+
 function copyText(element) {
     const textToCopy = element.querySelector('.format-value').textContent;
     navigator.clipboard.writeText(textToCopy).then(() => {

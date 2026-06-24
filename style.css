@@ -270,3 +270,75 @@ body {
 .format-row:hover .click-hint {
     color: #9ca3af;
 }
+
+/* ==========================================================================
+   COLOR HISTORY RECENT BLOCK
+   ========================================================================== */
+.history-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #1f2937;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #374151;
+}
+.history-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.history-title {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.clear-history-btn {
+    background: none;
+    border: none;
+    color: #6b7280;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.clear-history-btn:hover {
+    color: #ef4444; /* Vermelho discreto ao passar o mouse */
+}
+.history-swatches {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    min-height: 40px;
+}
+/* Estilo do mini-quadradinho histórico */
+.history-item {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%; /* Transforma em círculos modernos */
+    flex-shrink: 0;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.1);
+    position: relative;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.history-item:hover {
+    transform: scale(1.1);
+    border-color: rgba(255,255,255,0.6);
+}
+/* Ícone sutil flutuante de cópia dentro do círculo */
+.history-item::after {
+    content: "📋";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 0.7rem;
+    transition: transform 0.15s;
+    pointer-events: none;
+}
+.history-item:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+}
