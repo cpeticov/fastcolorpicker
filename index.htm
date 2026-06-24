@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Picker Minimalista</title>
+    <title>Minimalist Color Picker - One Click Color Converter</title>
     
     <!-- CONEXÃO COM A API DO GOOGLE ADSENSE -->
     <!-- Substitua 'ca-pub-XXXXXXXXXXXXXXXX' pelo seu ID de editor do AdSense quando for publicar -->
@@ -13,9 +13,11 @@
 </head>
 <body>
 
-    <!-- Bloco Esquerdo/Superior: Amostra da Cor -->
+    <!-- Left/Top Block: Color Preview Canvas -->
     <section class="preview-section" id="previewBg">
-        <button class="main-action-btn" id="actionBtn">Capturar Cor</button>
+        <button class="main-action-btn" id="actionBtn">Pick Color from Screen</button>
+        <!-- Discretely alerts the user about the browser clipboard permission -->
+        <span class="permission-hint" id="hintText">Requires clipboard permission to auto-copy</span>
         <input type="file" id="image-fallback" accept="image/*">
     </section>
 

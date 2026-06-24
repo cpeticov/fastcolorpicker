@@ -22,13 +22,23 @@ if (window.EyeDropper) {
         try {
             const result = await eyeDropper.open();
             updateFromHex(result.sRGBHex);
+            
+            // NOVO: Copia automaticamente o HEX assim que o usuário escolhe a cor na lupa
+            navigator.clipboard.writeText(result.sRGBHex.toUpperCase());
+            
+            // NOVO: Feedback visual na linha do HEX para avisar que foi copiado
+            const hexRow = document.getElementById('valHex').closest('.format-row');
+            const toast = hexRow.querySelector('.toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 1200);
+
         } catch (e) { console.log("Seleção cancelada"); }
     });
 } else {
     btn.textContent = "📸 Enviar Foto/Imagem";
     btn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files;
         if (!file) return;
         const reader = new FileReader();
         reader.onload = function(event) {
@@ -71,7 +81,7 @@ function rgbToCmyk(r, g, b) {
 
 // Calcula a menor distância geométrica entre a cor atual e a tabela Pantone
 function getClosestPantone(r, g, b) {
-    let closest = pantonePalette[0];
+    let closest = pantonePalette;
     let minDistance = Infinity;
     pantonePalette.forEach(p => {
         let distance = Math.sqrt(
