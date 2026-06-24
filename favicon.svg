@@ -1,36 +1,17 @@
 <svg xmlns="http://w3.org" viewBox="0 0 512 512" width="100%" height="100%">
-  <!-- Definições de Estilo para Mascarar o Arco-íris no Canto Superior Direito -->
   <defs>
     <clipPath id="topRightClip">
-      <rect x="0" y="0" width="512" height="512" />
+      <rect x="0" y="0" width="512" height="512"/>
     </clipPath>
   </defs>
-
-  <!-- Grupo do Arco-íris de 90 Graus (Centro do arco no canto superior direito: X=512, Y=0) -->
   <g clip-path="url(#topRightClip)">
-    <!-- Faixa 1: Vermelho/Rosa Vibrante (Raio Externo) -->
-    <circle cx="512" cy="0" r="500" fill="#ef4444" />
-    
-    <!-- Faixa 2: Laranja Moderno -->
-    <circle cx="512" cy="0" r="390" fill="#f97316" />
-    
-    <!-- Faixa 3: Verde Limão -->
-    <circle cx="512" cy="0" r="280" fill="#22c55e" />
-    
-    <!-- Faixa 4: Azul Elétrico (Raio Interno) -->
-    <circle cx="512" cy="0" r="170" fill="#3b82f6" />
-    
-    <!-- Recorte Central para criar o efeito de arco vazado -->
-    <circle cx="512" cy="0" r="60" fill="#111827" />
+    <circle cx="512" cy="0" r="500" fill="#ef4444"/>
+    <circle cx="512" cy="0" r="390" fill="#f97316"/>
+    <circle cx="512" cy="0" r="280" fill="#22c55e"/>
+    <circle cx="512" cy="0" r="170" fill="#3b82f6"/>
+    <circle cx="512" cy="0" r="60" fill="#111827"/>
   </g>
-
-  <!-- Cursor do Mouse Branco (Inclinado em 45° apontando para o centro/esquerda) -->
-  <!-- O contorno (stroke) garante que o cursor apareça nitidamente sobre o arco-íris -->
   <g transform="translate(180, 220) rotate(10)">
-    <path d="M 0,0 L 40,140 L 80,100 L 150,170 L 180,140 L 110,70 L 140,40 Z" 
-          fill="#ffffff" 
-          stroke="#111827" 
-          stroke-width="14" 
-          stroke-linejoin="round" />
+    <path d="M 0,0 L 40,140 L 80,100 L 150,170 L 180,140 L 110,70 L 140,40 Z" fill="#ffffff" stroke="#111827" stroke-width="14" stroke-linejoin="round"/>
   </g>
 </svg>
