@@ -1,0 +1,240 @@
+:root {
+    --selected-color: #3b82f6;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #111827;
+    color: #f3f4f6;
+    overflow-x: hidden;
+}
+
+/* Responsividade: Divide ao meio no PC, empilha no Mobile */
+@media (min-width: 768px) {
+    body {
+        flex-direction: row;
+    }
+    .preview-section, .control-section {
+        width: 50vw;
+        height: 100vh;
+    }
+}
+
+/* Metade Superior / Esquerda: Visualizador da Cor */
+.preview-section {
+    flex: 1;
+    background-color: var(--selected-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 40vh;
+    transition: background-color 0.1s ease;
+}
+.main-action-btn {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    padding: 16px 32px;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    transition: transform 0.2s, background 0.2s;
+}
+.main-action-btn:active {
+    transform: scale(0.95);
+}
+#image-fallback {
+    display: none;
+}
+
+/* Metade Inferior / Direita: Painel de Controle e Cópia */
+.control-section {
+    flex: 1.2;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+    background-color: #111827;
+}
+
+/* Sliders de Ajuste Grosso para o Polegar */
+.sliders-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.slider-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.slider-group span {
+    width: 24px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+input[type="range"] {
+    flex: 1;
+    height: 12px;
+    border-radius: 6px;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background: #374151;
+}
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+/* Linhas de Cópia "One Click" */
+.formats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.format-row {
+    background: #1f2937;
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #374151;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+}
+.format-row:active {
+    background: #374151;
+}
+.format-label {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.format-value {
+    font-size: 1.2rem;
+    font-family: monospace;
+    color: #fff;
+}
+
+/* Pequeno balão de aviso "Copiado!" */
+.toast {
+    position: absolute;
+    right: 16px;
+    background: #10b981;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+}
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* ==========================================================================
+   ESTILOS RESERVADOS PARA O GOOGLE ADSENSE (CORRIGIDO)
+   ========================================================================== */
+
+.adsense-wrapper {
+    background-color: #1f2937;
+    border: 1px dashed #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90px;
+    max-height: 90px; /* Trava a altura para não crescer desordenadamente */
+    overflow: hidden;
+    border-radius: 8px;
+    position: relative;
+    width: 100%;
+}
+
+.adsense-wrapper::before {
+    content: "ANÚNCIO";
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.6rem;
+    color: #4b5563;
+    letter-spacing: 1px;
+}
+
+/* No celular, esconde o anúncio do topo para focar nos controles */
+.ads-top {
+    display: none;
+}
+
+/* No celular, fixa o anúncio na base da tela */
+.ads-bottom-sticky {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 999;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    background-color: #0f172a;
+}
+
+body {
+    padding-bottom: 95px; 
+}
+
+/* Ajustes específicos e limpos para o Computador */
+@media (min-width: 768px) {
+    .ads-top {
+        display: flex;
+    }
+    
+    /* Remove a fixação do rodapé para que ele vire um bloco comum dentro do painel direito */
+    .ads-bottom-sticky {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        border-radius: 8px;
+        border: 1px dashed #374151;
+        background-color: #1f2937;
+    }
+    
+    body {
+        padding-bottom: 0;
+    }
+
+    /* Garante que o painel direito distribua bem os blocos sem criar espaços vazios gigantes */
+    .control-section {
+        justify-content: space-between;
+        height: 100vh;
+        overflow-y: auto;
+    }
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Picker Minimalista</title>
+    
+    <!-- CONEXÃO COM A API DO GOOGLE ADSENSE -->
+    <!-- Substitua 'ca-pub-XXXXXXXXXXXXXXXX' pelo seu ID de editor do AdSense quando for publicar -->
+    <script async src="https://googlesyndication.com" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Bloco Esquerdo/Superior: Amostra da Cor -->
+    <section class="preview-section" id="previewBg">
+        <button class="main-action-btn" id="actionBtn">Capturar Cor</button>
+        <input type="file" id="image-fallback" accept="image/*">
+    </section>
+
+    <!-- Bloco Direito/Inferior: Controles e Códigos -->
+    <section class="control-section">
+        
+        <!-- ANÚNCIO DE TOPO (Aparece no PC acima dos controles) -->
+        <div class="adsense-wrapper ads-top">
+            <!-- Insira seu bloco de anúncio horizontal/responsivo aqui -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="1234567890"
+                 data-ad-format="horizontal"
+                 data-full-width-responsive="true"></ins>
+            <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+        </div>
+
+        <!-- Sliders RGB para ajuste fino por toque -->
+        <div class="sliders-container">
+            <div class="slider-group">
+                <span style="color: #ef4444;">R</span>
+                <input type="range" id="slideR" min="0" max="255" value="59">
+            </div>
+            <div class="slider-group">
+                <span style="color: #22c55e;">G</span>
+                <input type="range" id="slideG" min="0" max="255" value="130">
+            </div>
+            <div class="slider-group">
+                <span style="color: #3b82f6;">B</span>
+                <input type="range" id="slideB" min="0" max="255" value="246">
+            </div>
+        </div>
+
+        <!-- Lista de Formatos "One Click" -->
+        <div class="formats-list">
+            <div class="format-row" onclick="copyText(this)">
+                <div>
+                    <div class="format-label">HEX</div>
+                    <div class="format-value" id="valHex">#3B82F6</div>
+                </div>
+                <div class="toast">Copiado!</div>
+            </div>
+            <div class="format-row" onclick="copyText(this)">
+                <div>
+                    <div class="format-label">RGB</div>
+                    <div class="format-value" id="valRgb">rgb(59, 130, 246)</div>
+                </div>
+                <div class="toast">Copiado!</div>
+            </div>
+            <div class="format-row" onclick="copyText(this)">
+                <div>
+                    <div class="format-label">CMYK</div>
+                    <div class="format-value" id="valCmyk">cmyk(76%, 47%, 0%, 4%)</div>
+                </div>
+                <div class="toast">Copiado!</div>
+            </div>
+            <div class="format-row" onclick="copyText(this)">
+                <div>
+                    <div class="format-label">Aproximação Pantone</div>
+                    <div class="format-value" id="valPantone">PMS 2192 C</div>
+                </div>
+                <div class="toast">Copiado!</div>
+            </div>
+        </div>
+
+        <!-- ANÚNCIO DE RODAPÉ (AGORA NO LUGAR CORRETO) -->
+        <div class="adsense-wrapper ads-bottom-sticky">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="0987654321"
+                 data-ad-format="horizontal"
+                 data-full-width-responsive="true"></ins>
+            <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+        </div>
+
+    </section> <!-- Fim da control-section -->
+
+    <script src="app.js"></script>
+</body>
+</html>
