@@ -77,26 +77,57 @@ if (window.EyeDropper) {
     });
 } else {
     btn.textContent = "📸 Upload Image or Photo";
+    const imgPreview = document.getElementById('user-image-preview');
+    
     btn.addEventListener('click', () => fileInput.click());
+    
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
+        
         const reader = new FileReader();
         reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = 1; canvas.height = 1;
-                ctx.drawImage(img, img.width/2, img.height/2, 1, 1, 0, 0, 1, 1);
-                const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
-                slideR.value = r; slideG.value = g; slideB.value = b;
-                updateColors();
-                addToHistory(rgbToHex(r, g, b));
-            }
-            img.src = event.target.result;
+            // Mostra a foto cobrindo a área superior do celular
+            imgPreview.src = event.target.result;
+            imgPreview.style.display = 'block';
+            
+            // Altera o texto do botão para guiar o usuário
+            btn.textContent = "👆 Tap anywhere on the image";
+            btn.style.background = "rgba(0,0,0,0.6)";
         }
         reader.readAsDataURL(file);
+    });
+
+    // Detecta o toque do dedo em qualquer ponto da imagem carregada
+    imgPreview.addEventListener('click', function(e) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = function() {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            // Calcula a proporção real do clique na foto baseada no tamanho da tela do celular
+            const rect = imgPreview.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * img.width;
+            const y = ((e.clientY - rect.top) / rect.height) * img.height;
+            
+            // Captura o pixel exato onde o usuário tocou
+            const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
+            
+            // Atualiza os sliders e a interface do site
+            slideR.value = r; slideG.value = g; slideB.value = b;
+            updateColors();
+            
+            // Adiciona ao histórico e copia o HEX automaticamente
+            const currentHex = rgbToHex(r, g, b);
+            addToHistory(currentHex);
+            navigator.clipboard.writeText(currentHex);
+            triggerToast('valHex');
+        };
+        img.src = imgPreview.src;
     });
 }
 
