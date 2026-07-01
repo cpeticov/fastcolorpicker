@@ -145,8 +145,15 @@ if (isMobile) {
         
         btn.addEventListener('click', () => fileInput.click());
         
+         // Caso 2: Computador SEM suporte ao Conta-Gotas nativo (Firefox, Zen Browser)
+        // (Procure por esta linha abaixo no seu código atual e substitua o bloco do fileInput)
+        
         fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
+            // TRAVAS DE SEGURANÇA: Impede o Firefox/Zen de abrir a imagem em uma nova aba
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const file = e.target.files[0]; // Força a leitura do primeiro arquivo explicitamente
             if (!file) return;
             
             const reader = new FileReader();
