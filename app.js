@@ -60,22 +60,11 @@ const pantonePalette = [
 // Inicializa a tela carregando o histórico salvo anteriormente
 renderHistory();
 
-if (window.EyeDropper) {
-    btn.textContent = "🔍 Pick Color from Screen"; 
-    btn.addEventListener('click', async () => {
-        const eyeDropper = new EyeDropper();
-        try {
-            const result = await eyeDropper.open();
-            updateFromHex(result.sRGBHex);
-            
-            // Salva no histórico e copia
-            addToHistory(result.sRGBHex.toUpperCase());
-            navigator.clipboard.writeText(result.sRGBHex.toUpperCase());
-            
-            triggerToast('valHex');
-        } catch (e) { console.log("Selection canceled"); }
-    });
-} else {
+// 1. Detecta se o dispositivo é genuinamente um celular/tablet pelo tamanho da tela ou toque
+const isMobile = window.matchMedia("(max-width: 768px)").matches || ('ontouchstart' in window);
+
+if (isMobile) {
+    // ---- FLUXO EXCLUSIVO PARA CELULARES ----
     btn.textContent = "📸 Upload Image or Photo";
     const imgPreview = document.getElementById('user-image-preview');
     
@@ -87,18 +76,14 @@ if (window.EyeDropper) {
         
         const reader = new FileReader();
         reader.onload = function(event) {
-            // Mostra a foto cobrindo a área superior do celular
             imgPreview.src = event.target.result;
             imgPreview.style.display = 'block';
-            
-            // Altera o texto do botão para guiar o usuário
             btn.textContent = "👆 Tap anywhere on the image";
             btn.style.background = "rgba(0,0,0,0.6)";
         }
         reader.readAsDataURL(file);
     });
 
-    // Detecta o toque do dedo em qualquer ponto da imagem carregada
     imgPreview.addEventListener('click', function(e) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -109,19 +94,14 @@ if (window.EyeDropper) {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             
-            // Calcula a proporção real do clique na foto baseada no tamanho da tela do celular
             const rect = imgPreview.getBoundingClientRect();
             const x = ((e.clientX - rect.left) / rect.width) * img.width;
             const y = ((e.clientY - rect.top) / rect.height) * img.height;
             
-            // Captura o pixel exato onde o usuário tocou
             const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
-            
-            // Atualiza os sliders e a interface do site
             slideR.value = r; slideG.value = g; slideB.value = b;
             updateColors();
             
-            // Adiciona ao histórico e copia o HEX automaticamente
             const currentHex = rgbToHex(r, g, b);
             addToHistory(currentHex);
             navigator.clipboard.writeText(currentHex);
@@ -129,7 +109,84 @@ if (window.EyeDropper) {
         };
         img.src = imgPreview.src;
     });
+
+} else {
+    // ---- FLUXO PARA COMPUTADORES (DESKTOP) ----
+    
+    // Caso 1: Computador com suporte ao Conta-Gotas nativo (Chrome, Edge, Opera)
+    if (window.EyeDropper) {
+        btn.textContent = "Pick Color from Screen";
+        btn.addEventListener('click', async () => {
+            try {
+                const eyeDropper = new EyeDropper();
+                const result = await eyeDropper.open();
+                const hex = result.sRGBHex;
+                
+                // Converte HEX para RGB para atualizar os sliders do seu site
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                
+                slideR.value = r; slideG.value = g; slideB.value = b;
+                updateColors();
+                
+                addToHistory(hex);
+                navigator.clipboard.writeText(hex);
+                triggerToast('valHex');
+            } catch (err) {
+                console.log("Selection canceled or failed");
+            }
+        });
+    } 
+    // Caso 2: Computador SEM suporte ao Conta-Gotas nativo (Firefox, Zen Browser)
+    else {
+        btn.textContent = "🖼️ Drop or Upload Image to Pick Color";
+        const imgPreview = document.getElementById('user-image-preview');
+        
+        btn.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                imgPreview.src = event.target.result;
+                imgPreview.style.display = 'block';
+                btn.textContent = "🎯 Click anywhere on the image below";
+                btn.style.background = "rgba(0,0,0,0.7)";
+            }
+            reader.readAsDataURL(file);
+        });
+
+        imgPreview.addEventListener('click', function(e) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                const rect = imgPreview.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * img.width;
+                const y = ((e.clientY - rect.top) / rect.height) * img.height;
+                
+                const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
+                slideR.value = r; slideG.value = g; slideB.value = b;
+                updateColors();
+                
+                const currentHex = rgbToHex(r, g, b);
+                addToHistory(currentHex);
+                navigator.clipboard.writeText(currentHex);
+                triggerToast('valHex');
+            };
+            img.src = imgPreview.src;
+        });
+    }
 }
+
 
 function rgbToHex(r, g, b) {
     return "#" + [r, g, b].map(x => {
