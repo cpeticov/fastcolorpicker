@@ -94,18 +94,51 @@ if (isMobile) {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             
+            // 1. Obtém as dimensões do elemento <img> na tela
             const rect = imgPreview.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * img.width;
-            const y = ((e.clientY - rect.top) / rect.height) * img.height;
             
-            const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
-            slideR.value = r; slideG.value = g; slideB.value = b;
-            updateColors();
+            // 2. Calcula as proporções de escala entre a imagem real e o elemento na tela
+            const imgRatio = img.width / img.height;
+            const containerRatio = rect.width / rect.height;
             
-            const currentHex = rgbToHex(r, g, b);
-            addToHistory(currentHex);
-            navigator.clipboard.writeText(currentHex);
-            triggerToast('valHex');
+            let actualWidth, actualHeight, offsetX, offsetY;
+            
+            // 3. Descobre o tamanho real que a imagem ocupa na tela (descontando as barras de espaço)
+            if (imgRatio > containerRatio) {
+                // Imagem é mais larga (barras pretas/invisíveis no topo e fundo)
+                actualWidth = rect.width;
+                actualHeight = rect.width / imgRatio;
+                offsetX = 0;
+                offsetY = (rect.height - actualHeight) / 2;
+            } else {
+                // Imagem é mais alta (barras pretas/invisíveis nas laterais)
+                actualWidth = rect.height * imgRatio;
+                actualHeight = rect.height;
+                offsetX = (rect.width - actualWidth) / 2;
+                offsetY = 0;
+            }
+            
+            // 4. Calcula a posição exata do clique em relação apenas à área da imagem
+            const clickX = e.clientX - rect.left - offsetX;
+            const clickY = e.clientY - rect.top - offsetY;
+            
+            // 5. Garante que o clique não estoure os limites da imagem caso o usuário clique na borda externa
+            if (clickX >= 0 && clickX <= actualWidth && clickY >= 0 && clickY <= actualHeight) {
+                // Converte a coordenada da tela para a coordenada real de pixels da imagem original
+                const x = (clickX / actualWidth) * img.width;
+                const y = (clickY / actualHeight) * img.height;
+                
+                // Captura o pixel cirúrgico
+                const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
+                
+                slideR.value = r; slideG.value = g; slideB.value = b;
+                updateColors();
+                
+                const currentHex = rgbToHex(r, g, b);
+                addToHistory(currentHex);
+                navigator.clipboard.writeText(currentHex);
+                triggerToast('valHex');
+            }
         };
         img.src = imgPreview.src;
     });
@@ -144,9 +177,6 @@ if (isMobile) {
         const imgPreview = document.getElementById('user-image-preview');
         
         btn.addEventListener('click', () => fileInput.click());
-        
-         // Caso 2: Computador SEM suporte ao Conta-Gotas nativo (Firefox, Zen Browser)
-        // (Procure por esta linha abaixo no seu código atual e substitua o bloco do fileInput)
         
         fileInput.addEventListener('change', (e) => {
             // TRAVAS DE SEGURANÇA: Impede o Firefox/Zen de abrir a imagem em uma nova aba
