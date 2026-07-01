@@ -245,3 +245,17 @@ function togglePrivacy(event) {
     const modal = document.getElementById('privacyModal');
     modal.classList.toggle('active');
 }
+
+    // Função para abrir/fechar o modal de Termos de Uso
+    function toggleTerms(event) {
+        event.preventDefault();
+        const modal = document.getElementById('termsModal');
+        modal.classList.toggle('active');
+    }
+
+    // Função para abrir/fechar o modal de Contato
+    function toggleContact(event) {
+        event.preventDefault();
+        const modal = document.getElementById('contactModal');
+        modal.classList.toggle('active');
+    }

@@ -129,6 +129,10 @@
 
         <div class="privacy-footer-link">
             <a href="#" onclick="togglePrivacy(event)">Privacy Policy</a>
+            <span style="color: #4b5563; margin: 0 8px;">|</span>
+            <a href="#" onclick="toggleTerms(event)">Terms of Service</a>
+            <span style="color: #4b5563; margin: 0 8px;">|</span>
+            <a href="#" onclick="toggleContact(event)">Contact Us</a>
         </div>
 
         <!-- ANÚNCIO DE RODAPÉ (AGORA NO LUGAR CORRETO) -->
@@ -178,6 +182,15 @@
         </div>
     </div>
 
+    <!-- CONTACT MODAL -->
+    <div id="contactModal" class="modal-overlay" onclick="toggleContact(event)">   
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="toggleContact(event)">&times;</button>
+            <h2>Contact Us</h2>
+            <p>If you have any questions, feedback, or suggestions regarding FastColorPicker, please feel free to reach out to us.</p>
+            <p>Email: <a href="mailto:proddig.adw@gmail.com">proddig.adw@gmail.com</a></p>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
